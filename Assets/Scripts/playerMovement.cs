@@ -7,7 +7,8 @@ public class playerMovement : MonoBehaviour
     public float moveSpeed;
     public Rigidbody2D Rigidbody;
 
-    private bool canMove;
+
+    public bool canMove =true;
     private Vector2 still = new Vector2(0, 0);
 
     // Start is called before the first frame update
@@ -23,7 +24,12 @@ public class playerMovement : MonoBehaviour
         {
             ProcessInput();
         }
-        if (Rigidbody.velocity == still) canMove = true;
+    }
+    
+    private void OnCollisionStay2D(Collision2D collision)
+    {
+        Debug.Log("Hit wall");
+        canMove = true;
     }
 
     void ProcessInput()
@@ -37,15 +43,15 @@ public class playerMovement : MonoBehaviour
         {
             Leap(new Vector2(-moveSpeed, 0));
         }
-        if (right)
+        else if (right)
         {
             Leap(new Vector2(moveSpeed, 0));
         }
-        if (up)
+        else if (up)
         {
             Leap(new Vector2(0, moveSpeed));
         }
-        if (down)
+        else if (down)
         {
             Leap(new Vector2(0, -moveSpeed));
         }
@@ -53,8 +59,11 @@ public class playerMovement : MonoBehaviour
 
     private void Leap(Vector2 direction)
     {
+        if (Rigidbody.velocity != still)
+        {
+            canMove = false;
+        }
         Rigidbody.velocity = still;
         Rigidbody.AddForce(direction);
-        canMove = false;
     }
 }
